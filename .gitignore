@@ -1,0 +1,11 @@
+*.pyc
+*.swp
+.DS_Store
+Data*
+Temp*
+Library*
+*csproj
+*pidb
+*sln
+*userprefs
+Builds
