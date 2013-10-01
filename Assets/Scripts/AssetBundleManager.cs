@@ -16,7 +16,7 @@ public class AssetBundleManager : MonoBehaviour
     public void UnloadBundle()
     {
         if (bundle != null)
-            bundle.Unload(false);
+            bundle.Unload(true);
     }
 
     public IEnumerator LoadBundleFromFileAsync(string path)
