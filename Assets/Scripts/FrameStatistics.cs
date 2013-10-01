@@ -17,7 +17,7 @@ public class FrameStatistics : MonoBehaviour {
 
 	void Start () 
 	{
-        Initialize();
+        Reset();
 	}
 	
 	void Update () 
@@ -33,7 +33,7 @@ public class FrameStatistics : MonoBehaviour {
         //guiText.text = meanFrameDelta + maxFrameDelta + minFrameDelta;
 	}
 
-    public void Initialize()
+    public void Reset()
     {
         frameDeltas = new Queue<float>();
     }
