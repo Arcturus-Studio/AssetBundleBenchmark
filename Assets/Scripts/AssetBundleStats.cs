@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class BundleStats : MonoBehaviour{
+public class AssetBundleStats : MonoBehaviour {
 
     public float maxFrameTime;
     public float meanFrameTime;
@@ -40,4 +40,8 @@ public class BundleStats : MonoBehaviour{
     {
         return "Duration | Max Frame Time | Mean Frame Time";
     }
+}
+
+public class Run {
+	
 }

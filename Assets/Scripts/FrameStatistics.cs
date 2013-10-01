@@ -15,11 +15,13 @@ public class FrameStatistics : MonoBehaviour {
     private string maxFrameDelta;
     private string minFrameDelta;
 
-	void Start () {
+	void Start () 
+	{
         Initialize();
 	}
 	
-	void Update () {
+	void Update () 
+	{
 
         frameDeltas.Enqueue(Time.deltaTime);
 
