@@ -13,7 +13,7 @@ public class TestRun
 	public void Begin()
 	{
 		start = Time.realtimeSinceStartup;
-		frameStats = Static.FrameStatistics;
+		frameStats = FrameStatistics.Instance;
 		frameStats.Reset ();
 	}
 

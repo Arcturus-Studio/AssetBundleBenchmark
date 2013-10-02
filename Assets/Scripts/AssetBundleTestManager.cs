@@ -6,6 +6,22 @@ using System.IO;
 using System.Linq;
 
 public class AssetBundleTestManager : MonoBehaviour {
+	public static AssetBundleTestManager Instance { get; private set; }
+
+    void Awake() {
+    	SingletonSetup();            
+    }
+	
+	void SingletonSetup() {
+		if (Instance != null) {
+			Debug.LogWarning("Attempted to instantiate second instance of singleton AssetBundleTestManager.");
+            Destroy(gameObject);
+            return;
+        }
+		Instance = this;
+		DontDestroyOnLoad(gameObject);
+	}
+	
 	public int numberOfRunsPerTest = 5;
     public static readonly int batchSize = 3;
 	
@@ -50,12 +66,12 @@ public class AssetBundleTestManager : MonoBehaviour {
         {
             var bundle = bundleName;
             int rowIndex = 0;
-            //bundleLoadTestInfo.Add(CreateBundleLoadTest("Loading bundle: " + bundle + " from file", () => Static.AssetBundleTestFunctions.LoadBundleFromFile(bundle), rowIndex++, colIndex));
-            //bundleLoadTestInfo.Add(BundleLoadTest("Loading bundle: " + bundle + " from file async", () => Static.AssetBundleTestFunctions.LoadBundleFromFileAsync(bundle), rowIndex++, colIndex));
-            //bundleLoadTestInfo.Add(BundleLoadTest("Loading bundle: " + bundle + " from file WWW", () => Static.AssetBundleTestFunctions.LoadBundleFromFileWWW(bundle), rowIndex++, colIndex));
-            bundleLoadTestInfo.Add(CreateAssetLoadTest("Loading assets from bundle: " + bundle, bundle, () => Static.AssetBundleTestFunctions.LoadAssetsFromBundle(bundle), rowIndex++, colIndex));
-            //bundleLoadTestInfo.Add(AssetLoadTest("Loading assets from bundle: " + bundle + " async", bundle, () => Static.AssetBundleTestFunctions.LoadAssetsFromBundleAsync(bundle), rowIndex++, colIndex));
-            //bundleLoadTestInfo.Add(AssetLoadTest("Loading assets from bundle: " + bundle + " with batch size: " + batchSize, bundle, () => Static.AssetBundleTestFunctions.LoadAssetsFromBundleMultiLoad(bundle, batchSize), rowIndex++, colIndex));
+            //bundleLoadTestInfo.Add(CreateBundleLoadTest("Loading bundle: " + bundle + " from file", () => AssetBundleTestFunctions.Instance.LoadBundleFromFile(bundle), rowIndex++, colIndex));
+            //bundleLoadTestInfo.Add(BundleLoadTest("Loading bundle: " + bundle + " from file async", () => AssetBundleTestFunctions.Instance.LoadBundleFromFileAsync(bundle), rowIndex++, colIndex));
+            //bundleLoadTestInfo.Add(BundleLoadTest("Loading bundle: " + bundle + " from file WWW", () => AssetBundleTestFunctions.Instance.LoadBundleFromFileWWW(bundle), rowIndex++, colIndex));
+            bundleLoadTestInfo.Add(CreateAssetLoadTest("Loading assets from bundle: " + bundle, bundle, () => AssetBundleTestFunctions.Instance.LoadAssetsFromBundle(bundle), rowIndex++, colIndex));
+            //bundleLoadTestInfo.Add(AssetLoadTest("Loading assets from bundle: " + bundle + " async", bundle, () => AssetBundleTestFunctions.Instance.LoadAssetsFromBundleAsync(bundle), rowIndex++, colIndex));
+            //bundleLoadTestInfo.Add(AssetLoadTest("Loading assets from bundle: " + bundle + " with batch size: " + batchSize, bundle, () => AssetBundleTestFunctions.Instance.LoadAssetsFromBundleMultiLoad(bundle, batchSize), rowIndex++, colIndex));
             colIndex++;
         }
 
@@ -97,10 +113,10 @@ public class AssetBundleTestManager : MonoBehaviour {
         {
             var bundleTest = testFuncInfo.bundleTest;
             yield return StartCoroutine(PerformTest(bundleTest));
-            Static.GUIText.text += "Performing " + testFuncInfo.name + "...\n";
+            Camera.main.guiText.text += "Performing " + testFuncInfo.name + "...\n";
             table[testFuncInfo.i + rowOffset, testFuncInfo.j + colOffset] = bundleTest.Output();
         }
-        Static.GUIText.text += "...Done!\n";
+        Camera.main.guiText.text += "...Done!\n";
         // output
         OutputTable(table, BenchmarkUtilities.bundleDirectoryPath + outputTableName);
     }
@@ -119,14 +135,14 @@ public class AssetBundleTestManager : MonoBehaviour {
             fs.Write(Environment.NewLine);
         }
         fs.Close();
-        Static.GUIText.text += "Saved output to : " + path;
+        Camera.main.guiText.text += "Saved output to : " + path;
     }
 	
     private TestFuncInfo CreateBundleLoadTest(string name, Func<IEnumerator> testFunc, int row, int col)
     {
         var info = new TestFuncInfo();
         info.name = name;
-		info.bundleTest = new AssetBundleTest(testFunc, null, Static.AssetBundleTestFunctions.UnloadBundle, numberOfRunsPerTest);
+		info.bundleTest = new AssetBundleTest(testFunc, null, AssetBundleTestFunctions.Instance.UnloadBundle, numberOfRunsPerTest);
         info.i = row;
         info.j = col;
         return info;
@@ -136,7 +152,7 @@ public class AssetBundleTestManager : MonoBehaviour {
     {
         var info = new TestFuncInfo();
         info.name = name;
-        info.bundleTest = new AssetBundleTest(testFunc, () => Static.AssetBundleTestFunctions.LoadBundleFromFile(bundle), Static.AssetBundleTestFunctions.UnloadBundle, numberOfRunsPerTest);
+        info.bundleTest = new AssetBundleTest(testFunc, () => AssetBundleTestFunctions.Instance.LoadBundleFromFile(bundle), AssetBundleTestFunctions.Instance.UnloadBundle, numberOfRunsPerTest);
         info.i = row;
         info.j = col;
         return info;

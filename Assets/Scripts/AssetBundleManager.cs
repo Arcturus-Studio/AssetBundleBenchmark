@@ -7,6 +7,21 @@ using System.Linq;
 
 public class AssetBundleManager : MonoBehaviour
 {
+	public static AssetBundleManager Instance { get; private set; }
+	
+    void Awake() {
+    	SingletonSetup();            
+    }
+	
+	void SingletonSetup() {
+		if (Instance != null) {
+			Debug.LogWarning("Attempted to instantiate second instance of singleton AssetBundleTestManager.");
+	        Destroy(gameObject);
+	        return;
+	    }
+		Instance = this;
+	}
+		
     private string filePrefix = "file://";
     private string bundlePath;
 

@@ -3,7 +3,23 @@ using System.Collections.Generic;
 using System.Linq;
 
 public class FrameStatistics : MonoBehaviour {
-
+	
+	public static FrameStatistics Instance { get; private set; }
+	
+    void Awake() {
+    	SingletonSetup();            
+    }
+	
+	void SingletonSetup() {
+		if (Instance != null) {
+			Debug.LogWarning("Attempted to instantiate second instance of singleton AssetBundleTestManager.");
+	        Destroy(gameObject);
+	        return;
+	    }
+		Instance = this;
+	}
+	
+	
     private int frameCounter;
     private Queue<float> frameDeltas;
 
